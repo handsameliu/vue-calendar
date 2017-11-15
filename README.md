@@ -1,4 +1,8 @@
-项目需要，纯手写制作的日历控件。 懒的新建项目了，所以无法直接运行，放到自己的项目里看吧。（我的项目由vue-cli搭建）
+# vue-calendar
+
+> vue日历控件，支持点击，父子通信
+
+项目需要，纯手写制作的日历控件。 
 
 使用时，只需在父组件中引入 `DateModel.vue` 文件即可，详情可查看父组件`testMain.vue`中引用详情。
 
@@ -33,3 +37,31 @@
 下一页
 
 ![avatar](http://olrrovutt.bkt.clouddn.com/20171115163216.jpg)
+
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+
+# run unit tests
+npm run unit
+
+# run e2e tests
+npm run e2e
+
+# run all tests
+npm test
+```
+
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
