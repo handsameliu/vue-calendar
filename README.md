@@ -1,4 +1,4 @@
-项目需要，纯手写制作的日历控件。 懒的新建项目了，所以无法运行，放到自己的项目里看吧。（我的项目由vue-cli搭建）
+项目需要，纯手写制作的日历控件。 懒的新建项目了，所以无法直接运行，放到自己的项目里看吧。（我的项目由vue-cli搭建）
 
 使用时，只需在父组件中引入 `DateModel.vue` 文件即可，详情可查看父组件`testMain.vue`中引用详情。
 
@@ -24,12 +24,12 @@
 
 初始化
 
-![avatar](https://github.com/handsameliu/vue-calendar/img/20171115162646.jpg)
+![avatar](http://olrrovutt.bkt.clouddn.com/20171115162646.jpg)
 
 点击
 
-![avatar](https://github.com/handsameliu/vue-calendar/img/20171115162733.jpg)
+![avatar](http://olrrovutt.bkt.clouddn.com/20171115162733.jpg)
 
 下一页
 
-![avatar](https://github.com/handsameliu/vue-calendar/img/20171115163216.jpg)
+![avatar](http://olrrovutt.bkt.clouddn.com/20171115163216.jpg)
