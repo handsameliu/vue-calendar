@@ -11,7 +11,7 @@
             </div>
             <div class="main">
                 <div class="day" v-for="(day,key) in dateArr" :key="key" @click="clickDate(day,key)">
-                    <div class="value" :class="(day.flag && 'disbaled') || (day.isActive && 'on')" >{{day.value}}</div>
+                    <div class="value" :class="((day.flag && 'disbaled') || (day.isActive && 'on'))" >{{day.value}}</div>
                     <div class="parameter"></div>
                 </div>
             </div>
@@ -48,22 +48,21 @@
             console.log('父组件传来的时间',this.parentTime)
             let time = this.parentTime?new Date(this.parentTime):new Date();        // 如果父级传入就以父级为准，反之默认为当前时间
             this.init(time);                                                        // 初始化数据
-            this.$emit('getQueryByDate',this.showTime);                             // 初始化时像父级发送当前日期（没有使用watch监听时间是否改变）
+            this.$emit('getQueryByDate',this.showTime+'/'+this.currentDay);                             // 初始化时像父级发送当前日期（没有使用watch监听时间是否改变）
         },
         methods:{
             init(time){         // 初始化
                 this.currentDate = time;
                 this.currentYear = time.getFullYear();
                 this.currentMonth = time.getMonth();
-                this.currentDay = this.tempDay || time.getDate();
+                this.currentDay = time.getDate();       // this.tempDay || time.getDate();
                 this.getMonthDays();
                 this.getFirstDay();
                 this.calcullateDates();
-                this.showTime = this.currentYear+'/'+(this.currentMonth+1)+'/'+this.currentDay;
-                this.tempDay = '';
+                this.showTime = this.currentYear+'/'+(this.currentMonth+1);//+'/'+this.currentDay;
             },
             isLeap(year){       // 计算闰年
-                return year%100==0?(year%400==0?1:0):(year%4==0?1:0)
+                return year%100==0?(year%400==0?1:0):(year%4==0?1:0);
             },
             getMonthDays(){     // 预先设置每月天数并计算二月天数
                 this.monthDays = new Array(31,28+this.isLeap(this.currentYear),31,30,31,30,31,31,30,31,30,31);
@@ -73,7 +72,7 @@
             },
             calcullateDates(){  // 计算月内天数，共显示5行，所以循环35次，超出当月天数的要重新计算
                 let tempArr = [];
-                for(let i=0;i<35;i++){
+                for(let i=0;i<42;i++){
                     let dateValue = i-this.firstDay+1;                                // 当月
                     let clickFlag = false;                                            // 是否可点击
                     let isActive = false;                                             // 是否选中
@@ -98,34 +97,45 @@
                         clickFlag = true;
                         time.month = this.currentMonth+1+1;
                         time.day = dateValue;
-                    }else if((this.currentDay<dateValue && this.today.getMonth()<=this.currentMonth) || this.today.getMonth()<this.currentMonth || this.today.getFullYear()<this.currentYear){    // 大于今天日期不能点击
+                    }else if((this.today.getDate()<dateValue && this.today.getMonth()<=this.currentMonth && this.today.getFullYear()==this.currentYear) || (this.today.getMonth()<this.currentMonth && this.today.getFullYear()<=this.currentYear) || this.today.getFullYear()<this.currentYear){    // 大于今天日期不能点击
                         clickFlag = true;
                     }
-                    if(dateValue == this.currentDay){
+                    if(dateValue == this.currentDay && this.today.getFullYear()==this.currentYear && this.today.getMonth()==this.currentMonth){    // 当天才会默认选中
                         isActive = true;
+                        this.tempDay = dateValue;
                     }
                     tempArr.push({value:dateValue,flag:clickFlag,isActive,dateObj:time});
                 }
                 this.dateArr = tempArr;
+                this.initNum++;
             },
             nextMonth(){        // 下月
                 let time = new Date(this.currentYear,this.currentMonth+2,0);
-                this.tempDay = this.currentDay;
                 this.init(time);
             },
             preMonth(){         // 上月
                 let time = new Date(this.currentYear,this.currentMonth,0);
-                this.tempDay = this.currentDay;
                 this.init(time);
             },
             clickDate(day,key){ // 点击事件，向父组件传递所点击的年月日
-                if(day.flag){return false;}
+                // if(day.flag){return false;}
                 // console.log(day,key);
-                this.showTime = day.dateObj.year+'/'+(day.dateObj.month)+'/'+day.dateObj.day;
+                if(day.dateObj.month>this.today.getMonth()+1 || (day.dateObj.month==this.today.getMonth()+1 && day.dateObj.day>this.today.getDate())){
+                    return false;
+                }
+                if(day.dateObj.month != this.currentMonth+1){        // 点击当前区域内的灰色部分，自动跳转到上个月或者下个月。
+                    if(day.dateObj.year<=this.currentYear && day.dateObj.month>this.currentMonth+1){
+                        this.nextMonth();
+                    }else if(day.dateObj.year>=this.currentYear && day.dateObj.month<this.currentMonth+1){
+                        this.preMonth();
+                    }
+                }
+                this.showTime = day.dateObj.year+'/'+(day.dateObj.month);//+'/'+day.dateObj.day;
+                this.tempDay = day.dateObj.day;
                 this.dateArr.forEach((item,index) => {
-                    this.dateArr[index].isActive = index == key;
+                    this.dateArr[index].isActive = (this.dateArr[index].dateObj.month==day.dateObj.month && this.dateArr[index].dateObj.day == day.dateObj.day);
                 });
-                this.$emit('getQueryByDate',this.showTime);
+                this.$emit('getQueryByDate',this.showTime+'/'+day.dateObj.day);
             }
         }
     }
@@ -134,7 +144,7 @@
     .dateModel *{box-sizing: border-box;margin:0;padding:0;}
     .dateModel{
         width:100%;
-        height:10rem;
+        height:11rem;
         background: -webkit-linear-gradient(#00a4ff, #25c8ff);
         background: -o-linear-gradient(#00a4ff, #25c8ff);
         background: -moz-linear-gradient(#00a4ff, #25c8ff);
