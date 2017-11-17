@@ -1,7 +1,7 @@
 {
   "name": "vue-calendar",
   "version": "1.0.0",
-  "description": "vue 日历控�) vue日历控件，支持点击，父子通信",
+  "description": " vue日历控件，支持点击，父子通信",
   "author": "handsameliu <wei.liu@semioe.com>",
   "private": true,
   "scripts": {
